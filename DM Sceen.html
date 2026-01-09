@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Simple DM Screen</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e1e;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #ffd479;
+    }
+    .section {
+      background: #2b2b2b;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+    button {
+      padding: 6px 10px;
+      margin-top: 5px;
+      cursor: pointer;
+    }
+    input {
+      padding: 5px;
+      width: 60px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div style="background:#111;padding:15px 20px;display:flex;align-items:center;justify-content:space-between;">
+  <div>
+    <h1 style="margin:0;color:#ffd479;">D&D DM Screen</h1>
+    <p style="margin:0;font-size:14px;color:#ccc;">Welcome, Dungeon Masters — everything behind the screen, in one place.</p>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <input type="text" id="search" placeholder="Search rules..." onkeyup="searchRules()" style="padding:6px;" />
+    <div style="font-size:24px;cursor:pointer;" onclick="toggleMenu()">☰</div>
+  </div>
+</div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar" style="position:fixed;top:0;left:-260px;width:250px;height:100%;background:#222;padding:20px;transition:0.3s;z-index:10;">
+  <h2 style="color:#ffd479;">Menu</h2>
+  <ul style="list-style:none;padding:0;">
+    <li><a href="#dice" style="color:#fff;" onclick="toggleMenu()">Dice Roller</a></li>
+    <li><a href="#names" style="color:#fff;" onclick="toggleMenu()">Name Generator</a></li>
+    <li><a href="#personality" style="color:#fff;" onclick="toggleMenu()">NPC Personality</a></li>
+    <li><a href="#rules" style="color:#fff;" onclick="toggleMenu()">Conditions</a></li>
+    <li><a href="#notes" style="color:#fff;" onclick="toggleMenu()">Notes</a></li>
+  </ul>
+  <button onclick="toggleMenu()">Close</button>
+</div>
+
+<!-- Home Info -->
+<div class="section">
+  <h2>📖 About This Tool</h2>
+  <p>
+    This is a lightweight digital DM Screen designed to help Dungeon Masters run games smoothly.
+    It gives you fast access to rules, generators, notes, and dice — all in one simple offline page.
+    No logins, no installs, no distractions.
+  </p>
+</div>
+
+<div id="dice" class="section">
+  <h2>🎲 Dice Roller</h2>
+  <p>Roll a d20 or custom dice</p>
+  <button onclick="rollDice(20)">Roll d20</button>
+  <button onclick="rollDice(6)">Roll d6</button>
+  <br><br>
+  d<input id="customDie" type="number" value="10" />
+  <button onclick="rollCustom()">Roll</button>
+  <p id="diceResult"></p>
+</div>
+
+<div id="names" class="section">
+  <h2>NPC Name Generator</h2>
+  <button onclick="generateName()">Generate Name</button>
+  <p id="nameResult"></p>
+</div>
+
+<div id="rules" class="section">
+  <h2>Conditions</h2>
+  <ul>
+    <li><b>Blinded:</b> Cannot see, attacks have disadvantage</li>
+    <li><b>Charmed:</b> Cannot attack charmer</li>
+    <li><b>Deafened:</b> Cannot hear</li>
+    <li><b>Frightened:</b> Disadvantage while source is visible</li>
+    <li><b>Grappled:</b> Speed becomes 0</li>
+    <li><b>Incapacitated:</b> Cannot take actions</li>
+    <li><b>Invisible:</b> Cannot be seen, attacks have advantage</li>
+    <li><b>Paralyzed:</b> Incapacitated, attacks auto-crit if hit</li>
+    <li><b>Petrified:</b> Turned to stone</li>
+    <li><b>Poisoned:</b> Disadvantage on attacks and ability checks</li>
+    <li><b>Prone:</b> Melee attacks have advantage</li>
+    <li><b>Restrained:</b> Speed 0, disadvantage on attacks</li>
+    <li><b>Stunned:</b> Incapacitated, fails Str/Dex saves</li>
+    <li><b>Unconscious:</b> Incapacitated, prone, auto-crit if hit</li>
+  </ul>
+</div>
+
+<div id="notes" class="section">
+  <h2>Notes</h2>
+  <textarea id="notes" style="width:100%; height:100px;"></textarea>
+</div>
+
+<div class="section">
+  <h2>🔍 Rule Search</h2>
+  <input type="text" id="search" placeholder="Search conditions..." onkeyup="searchRules()" />
+</div>
+
+<div id="personality" class="section">
+  <h2>NPC Personality</h2>
+  <button onclick="generatePersonality()">Generate Trait</button>
+  <p id="personalityResult"></p>
+</div>
+
+<script>
+  // Dice Roller
+  function rollDice(sides) {
+    const roll = Math.floor(Math.random() * sides) + 1;
+    document.getElementById('diceResult').innerText = `Rolled d${sides}: ${roll}`;
+  }
+
+  function rollCustom() {
+    const sides = document.getElementById('customDie').value;
+    rollDice(sides);
+  }
+
+  // Name Generator
+  const firstNames = ["Aelar", "Bryn", "Cedric", "Dain", "Elora", "Fenn", "Kael", "Lira", "Mira", "Thorn"]; 
+  const lastNames = ["Stonehand", "Ravenwood", "Brightwater", "Ironfist", "Moonfall", "Ashwalker", "Stormborn"]; 
+
+  function generateName() {
+    const first = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const last = lastNames[Math.floor(Math.random() * lastNames.length)];
+    document.getElementById('nameResult').innerText = `${first} ${last}`;
+  }
+
+  // Personality Generator
+  const traits = [
+    "Always suspicious",
+    "Overly friendly",
+    "Greedy but polite",
+    "Brave to a fault",
+    "Avoids eye contact",
+    "Speaks very formally"
+  ];
+
+  function generatePersonality() {
+    const trait = traits[Math.floor(Math.random() * traits.length)];
+    document.getElementById('personalityResult').innerText = trait;
+  }
+
+  // Rule Search
+  function toggleMenu() {
+    const menu = document.getElementById('sidebar');
+    menu.style.left = menu.style.left === '0px' ? '-260px' : '0px';
+  }
+
+  function searchRules() {
+    const input = document.getElementById('search').value.toLowerCase();
+    const items = document.querySelectorAll('li');
+    items.forEach(item => {
+      item.style.display = item.innerText.toLowerCase().includes(input) ? '' : 'none';
+    });
+  }
+
+  // Auto-save notes
+  const notes = document.getElementById('notes');
+  notes.value = localStorage.getItem('dmNotes') || '';
+  notes.addEventListener('input', () => {
+    localStorage.setItem('dmNotes', notes.value);
+  });
+</script>
+
+</body>
+</html>
